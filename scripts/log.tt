@@ -1,4 +1,4 @@
-sh echo "logging starts (this process may take serveral minutes).\n"
+sh echo "logging starts (this process may take several minutes).\n"
 
 sh echo -n "dumpping flows of every switch..."
 sh ovs-ofctl dump-flows e0_1 > logs/e0_1.dump.log
