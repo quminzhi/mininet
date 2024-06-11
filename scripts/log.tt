@@ -1,0 +1,56 @@
+sh echo "logging starts (this process may take serveral minutes).\n"
+
+sh echo -n "dumpping flows of every switch..."
+sh ovs-ofctl dump-flows e0_1 > logs/e0_1.dump.log
+sh ovs-ofctl dump-flows e0_2 > logs/e0_2.dump.log
+sh ovs-ofctl dump-flows e1_1 > logs/e1_1.dump.log
+sh ovs-ofctl dump-flows e1_2 > logs/e1_2.dump.log
+sh ovs-ofctl dump-flows e2_1 > logs/e2_1.dump.log
+sh ovs-ofctl dump-flows e2_2 > logs/e2_2.dump.log
+sh ovs-ofctl dump-flows e3_1 > logs/e3_1.dump.log
+sh ovs-ofctl dump-flows e3_2 > logs/e3_2.dump.log
+
+sh ovs-ofctl dump-flows a0_1 > logs/a0_1.dump.log
+sh ovs-ofctl dump-flows a1_1 > logs/a1_1.dump.log
+sh ovs-ofctl dump-flows a2_1 > logs/a2_1.dump.log
+sh ovs-ofctl dump-flows a3_2 > logs/a3_2.dump.log
+
+sh ovs-ofctl dump-flows c2 > logs/c2.dump.log
+sh echo "  done!"
+
+sh echo -n "logging iperf tests..."
+h0_3 iperf -s > /dev/null &
+h2_2 iperf -s > /dev/null &
+h1_3 iperf -s > /dev/null &
+h3_2 iperf -s > /dev/null &
+h3_3 iperf -s > /dev/null &
+h0_1 iperf -c h0_3 > logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+h0_2 iperf -c h0_3 >> logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+h1_1 iperf -c h2_2 >> logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+h1_2 iperf -c h1_3 >> logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+h3_1 iperf -c h3_2 >> logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+h3_2 iperf -c h3_3 >> logs/iperf.out
+sh echo "\n" >> logs/iperf.out
+sh echo "  done!"
+
+sh echo "ping tests start..."
+sh echo "h0_1 ping -c20 h0_3"
+h0_1 ping -c20 h0_3 > logs/latency.out
+sh echo "h0_2 ping -c20 h0_3"
+h0_2 ping -c20 h0_3 >> logs/latency.out
+sh echo "h1_1 ping -c20 h2_2"
+h1_1 ping -c20 h2_2 >> logs/latency.out
+sh echo "h1_2 ping -c20 h1_3"
+h1_2 ping -c20 h1_3 >> logs/latency.out
+sh echo "h3_1 ping -c20 h3_2"
+h3_1 ping -c20 h3_2 >> logs/latency.out
+sh echo "h3_2 ping -c20 h3_3"
+h3_2 ping -c20 h3_3 >> logs/latency.out
+sh echo "done!\n"
+
+sh echo "finished logging.\nPlease check log directory to see details (logs/)."
